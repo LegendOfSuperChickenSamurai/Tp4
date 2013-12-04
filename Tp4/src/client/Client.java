@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Client
@@ -28,7 +27,7 @@ public class Client
                 dOut.writeUTF(input);
                 dOut.flush(); // Send off the data
 
-            }while (input != "Q");
+            }while (!input.equals(new String("Q")));
 
             // Send the exit message
             dOut.writeByte(-1);

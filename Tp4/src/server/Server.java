@@ -2,7 +2,6 @@ package server;
 
 import java.io.*;
 import java.net.*;
-import java.security.*;
 
 
 public class Server
@@ -21,8 +20,6 @@ public class Server
 
             while ((i++ < maxConnections) || (maxConnections == 0))
             {
-                doComms connection;
-
                 server = listener.accept();
                 doComms conn_c = new doComms(server);
                 Thread t = new Thread(conn_c);
@@ -41,7 +38,6 @@ public class Server
 class doComms implements Runnable
 {
     private Socket server;
-    private String line, input;
 
     public doComms(Socket server)
     {
