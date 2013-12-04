@@ -25,6 +25,7 @@ public class Server
                 Thread t = new Thread(conn_c);
                 t.start();
             }
+            listener.close();
         }
         catch (IOException ioe)
         {

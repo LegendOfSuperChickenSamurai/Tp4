@@ -16,6 +16,7 @@ public class Client
             DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
 
             String input = "";
+            Boolean done = false;
 
             do
             {
@@ -23,18 +24,25 @@ public class Client
                 BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
                 input = bufferRead.readLine();
 
-                dOut.writeByte(1);
-                dOut.writeUTF(input);
-                dOut.flush(); // Send off the data
-
-            }while (!input.equals(new String("Q")));
+                if (input.equals(new String("Q")))
+                {
+                	done = true;
+                }
+                else
+                {
+                	dOut.writeByte(1);
+                    dOut.writeUTF(input);
+                    dOut.flush(); // Send off the data
+                }
+                
+            }while (!done);
 
             // Send the exit message
             dOut.writeByte(-1);
             dOut.flush();
 
             dOut.close();
-
+            socket.close();
         }
         catch (IOException ioe)
         {
