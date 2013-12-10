@@ -6,11 +6,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import client.Interface.Login;
+import javafx.application.Application;
+
 public class Client
 {
     public static void main (String[] args)
     {
-        try
+    	Application.launch(Login.class, args);
+    }
+    public void connectToServer()
+    {
+    	try
         {
             Socket socket = new Socket("localhost", 4444);
             DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
