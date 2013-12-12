@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import client.Interface.Login;
+import client.Interface.ChatRoom;
 import javafx.application.Application;
 
 public class Client
 {
     public static void main (String[] args)
     {
-    	Application.launch(Login.class, args);
+    	Application.launch(ChatRoom.class, args);
     }
     public void connectToServer()
     {
