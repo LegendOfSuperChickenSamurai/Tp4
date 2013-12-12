@@ -26,13 +26,18 @@ public class ChatRoom extends Application
 	
 	private void initElements()
 	{
-		 login = new Login(); 
-		 login.showDialog();
-		 GridPane upGrid = new GridPane();
+		showLogin(); 
+		GridPane upGrid = new GridPane();
 		 upGrid.setVgap(6);
 		 upGrid.setHgap(6);
 		 upGrid.add(new Text("Nom d'utilisateur"), 0, 0);
 		 borderpane.setTop(upGrid);
+	}
+	
+	private void showLogin()
+	{
+		 login = new Login(); 
+		 login.showDialog();
 	}
 
 }
