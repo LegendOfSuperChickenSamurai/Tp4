@@ -22,8 +22,8 @@ public class Login extends Stage
 	private final String LOGIN = "Login";
 	BorderPane borderpane = new BorderPane();
 	
-	Button connect = new Button("connect");
-	Button cancel = new Button("cancel");
+	Button connect = new Button("Connect");
+	Button cancel = new Button("Cancel");
 	
 	TextField ipAddressField = new TextField();
 	TextField portField = new TextField();
@@ -67,7 +67,7 @@ public class Login extends Stage
 	 this.connect.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {			
-					Login.this.close();;
+					Login.this.close();
 			}
 		});
 	}

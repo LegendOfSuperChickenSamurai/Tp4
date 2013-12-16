@@ -11,11 +11,16 @@ import javafx.application.Application;
 
 public class Client
 {
-    public static void main (String[] args)
+	String username = "default";
+	String ip = "127.0.0.1";
+	int port = 50;
+	
+	public static void main (String[] args)
     {
     	Application.launch(ChatRoom.class, args);
     }
-    public void connectToServer()
+    
+	public void connectToServer()
     {
     	try
         {
@@ -56,5 +61,35 @@ public class Client
             System.out.println("IOException on socket listen: " + ioe);
             ioe.printStackTrace();
         }
+    }
+    
+    public String getUsername()
+    {
+		return this.username;
+    }
+    
+    public void setUsername(String _username)
+    {
+    	this.username = _username;
+    }
+    
+    public String getIp()
+    {
+    	return this.ip;
+    }
+    
+    public void setIp(String _ip)
+    {
+    	this.ip = _ip;
+    }
+    
+    public Integer getPort()
+    {
+    	return this.port;
+    }
+    
+    public void setPort(int _port)
+    {
+    	this.port = _port;
     }
 }
