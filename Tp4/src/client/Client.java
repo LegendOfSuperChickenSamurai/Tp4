@@ -12,8 +12,8 @@ import javafx.application.Application;
 public class Client
 {
 	String username = "default";
-	String ip = "127.0.0.1";
-	int port = 50;
+	String ip = "localhost";
+	int port = 4444;
 	
 	public static void main (String[] args)
     {
@@ -24,7 +24,7 @@ public class Client
     {
     	try
         {
-            Socket socket = new Socket("localhost", 4444);
+            Socket socket = new Socket(ip, port);
             DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
 
             String input = "";

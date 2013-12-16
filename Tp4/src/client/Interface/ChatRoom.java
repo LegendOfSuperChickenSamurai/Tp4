@@ -2,11 +2,14 @@ package client.Interface;
 
 import client.Client;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -46,6 +49,7 @@ public class ChatRoom extends Application
 	{
 		showLogin(); 
 		initInputAndOutput();
+		addTextToOutput();
 		
 		Button connect = new Button(this.CONNECT);
 		GridPane rightGrid = new GridPane();
@@ -92,14 +96,25 @@ public class ChatRoom extends Application
 	
 	private void addTextToOutput()
 	{
-	
+		 
 	}
 	
 	private void initInputAndOutput()
 	{
 		output.setEditable(false);
         output.setStyle("-fx-border-style: none");
-        output.setFocusTraversable(false);   
+        output.setFocusTraversable(false); 
+       
+        input.setOnKeyPressed(new EventHandler<KeyEvent>() {	  
+            @Override
+            public void handle(KeyEvent event) {
+            	if (event.getCode().equals(KeyCode.ENTER))
+            	{
+            		output.appendText(input.getText() + "\n");	
+	                input.setText(""); 
+            	}	  
+            }
+        });
 	}
 
 }
