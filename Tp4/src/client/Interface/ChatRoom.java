@@ -37,6 +37,7 @@ public class ChatRoom extends Application
 	@Override
 	public void start(Stage stage) throws Exception
 	{
+		//TODO
 		newElements();
 		Scene scene = new Scene(this.borderpane);
 		scene.setFill(Color.web("0xC0C0C0"));

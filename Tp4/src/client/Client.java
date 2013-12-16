@@ -11,6 +11,7 @@ import javafx.application.Application;
 
 public class Client
 {
+	//TODO
 	String username = "default";
 	String ip = "localhost";
 	int port = 4444;

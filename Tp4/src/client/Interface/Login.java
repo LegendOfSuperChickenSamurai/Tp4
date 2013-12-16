@@ -32,6 +32,7 @@ public class Login extends Stage
 	
 	public Login()
 	{
+		//TODO
 		super();
 		this.initScene();
 		this.initElements();
