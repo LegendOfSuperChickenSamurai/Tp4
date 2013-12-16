@@ -18,7 +18,7 @@ public class Client
 	
 	public static void main (String[] args)
     {
-    	Application.launch(ChatRoom.class, args);
+		Application.launch(ChatRoom.class, args);
     }
     
 	public void connectToServer()

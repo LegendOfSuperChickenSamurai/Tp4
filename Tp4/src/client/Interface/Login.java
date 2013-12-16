@@ -66,6 +66,7 @@ public class Login extends Stage
 				usernameField.setText("");
 				ipAddressField.setText("");
 				portField.setText("");
+				
 				Login.this.close();
 			}
 		});
@@ -77,6 +78,7 @@ public class Login extends Stage
 				Integer integer = new Integer(portField.getText());
 				client.setPort(integer);
 				client.setUsername(usernameField.getText());
+				
 				Login.this.close();
 			}
 		});
