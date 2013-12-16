@@ -2,27 +2,29 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.Vector;
 
 
 public class Server
 {
-    private static int port = 4444, maxConnections = 2;
+    private static Vector<DataOutputStream> tabClients = new Vector<DataOutputStream>();
+    private static int port = 4444;
+    private static int maxConnections = 10;
+    private static int nbOfClient = 0;
 
-    // Listen for incoming connections and handle them
+
     public static void main(String[] args)
     {
-        int i = 0;
-
         try
         {
             ServerSocket listener = new ServerSocket(port);
             Socket server;
 
-            while ((i++ < maxConnections) || (maxConnections == 0))
+            while (nbOfClient <= maxConnections)
             {
                 server = listener.accept();
-                doComms conn_c = new doComms(server);
-                Thread t = new Thread(conn_c);
+                ServerThread temp = new ServerThread(server);
+                Thread t = new Thread(temp);
                 t.start();
             }
             listener.close();
@@ -34,44 +36,40 @@ public class Server
         }
     }
 
-}
-
-class doComms implements Runnable
-{
-    private Socket server;
-
-    public doComms(Socket server)
+    static synchronized public int addClient(DataOutputStream dOut)
     {
-        this.server = server;
+        nbOfClient++;
+        tabClients.addElement(dOut);
+        return tabClients.size() - 1;
     }
 
-    public void run()
+    static synchronized public void removeClient(int position)
     {
-        DataInputStream dIn = null;
-        try
+        nbOfClient--;
+        if (tabClients.elementAt(position) != null)
         {
-            dIn = new DataInputStream(server.getInputStream());
+            tabClients.removeElementAt(position);
+        }
+    }
 
-            boolean done = false;
-            while (!done)
+    static synchronized public void sendAll(String message)
+    {
+        DataOutputStream dOut;
+        for (int i = 0; i < tabClients.size(); i++)
+        {
+            dOut = tabClients.elementAt(i);
+            if (dOut != null)
             {
-                byte messageType = dIn.readByte();
-
-                switch (messageType)
+                try
                 {
-                    case 1: // Type A
-                        System.out.println("I got : " + dIn.readUTF());
-                        break;
-                    default:
-                        done = true;
+                    dOut.writeUTF(message);
+                    dOut.flush();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
                 }
             }
-            dIn.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
         }
     }
-}
 
+}
