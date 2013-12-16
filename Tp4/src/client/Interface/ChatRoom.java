@@ -45,7 +45,8 @@ public class ChatRoom extends Application
 	private void initElements()
 	{
 		showLogin(); 
-
+		initInputAndOutput();
+		
 		Button connect = new Button(this.CONNECT);
 		GridPane rightGrid = new GridPane();
 		rightGrid.setVgap(6);
@@ -91,12 +92,14 @@ public class ChatRoom extends Application
 	
 	private void addTextToOutput()
 	{
-		
+	
 	}
 	
 	private void initInputAndOutput()
 	{
-		
+		output.setEditable(false);
+        output.setStyle("-fx-border-style: none");
+        output.setFocusTraversable(false);   
 	}
 
 }
