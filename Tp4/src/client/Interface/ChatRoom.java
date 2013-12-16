@@ -2,6 +2,7 @@ package client.Interface;
 
 import client.Client;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -62,6 +63,13 @@ public class ChatRoom extends Application
 		this.borderpane.setRight(rightGrid);
 		BorderPane.setMargin(rightGrid, new Insets(3));
 		
+		connect.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {			
+					login.showDialog();
+			}
+		});
+		
 		GridPane leftGrid = new GridPane();
 		leftGrid.setVgap(10);
 		leftGrid.setHgap(6);
@@ -78,6 +86,13 @@ public class ChatRoom extends Application
 		bottomGrid.add(addText, 2, 0);
 		this.borderpane.setBottom(bottomGrid);
 		BorderPane.setMargin(bottomGrid, new Insets(3));
+		
+		addText.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {			
+				addTextToOutput();
+			}
+		});
 	}
 
 	private void showLogin()
@@ -96,7 +111,9 @@ public class ChatRoom extends Application
 	
 	private void addTextToOutput()
 	{
-		 
+		//TODO
+		output.appendText(input.getText() + "\n");	
+        input.setText("");
 	}
 	
 	private void initInputAndOutput()
@@ -110,11 +127,10 @@ public class ChatRoom extends Application
             public void handle(KeyEvent event) {
             	if (event.getCode().equals(KeyCode.ENTER))
             	{
-            		output.appendText(input.getText() + "\n");	
-	                input.setText(""); 
+            		addTextToOutput();
             	}	  
             }
         });
+        input.requestFocus();
 	}
-
 }

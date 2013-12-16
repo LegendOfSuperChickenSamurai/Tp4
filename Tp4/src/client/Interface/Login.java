@@ -1,5 +1,6 @@
 package client.Interface;
 
+import client.Client;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,7 +25,7 @@ public class Login extends Stage
 	
 	Button connect = new Button("Connect");
 	Button cancel = new Button("Cancel");
-	
+	Client client;
 	TextField ipAddressField = new TextField();
 	TextField portField = new TextField();
 	TextField usernameField = new TextField();
@@ -34,6 +35,7 @@ public class Login extends Stage
 		super();
 		this.initScene();
 		this.initElements();
+		this.client = new Client();
 	}
 	
 	private void initElements()
@@ -60,14 +62,21 @@ public class Login extends Stage
 	 this.cancel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {			
-					Login.this.close();;
+				usernameField.setText("");
+				ipAddressField.setText("");
+				portField.setText("");
+				Login.this.close();
 			}
 		});
 	 
 	 this.connect.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {			
-					Login.this.close();
+				client.setIp(ipAddressField.getText());
+				Integer integer = new Integer(portField.getText());
+				client.setPort(integer);
+				client.setUsername(usernameField.getText());
+				Login.this.close();
 			}
 		});
 	}
