@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-class ServerThread implements Runnable
+public class ServerThread implements Runnable
 {
     private Socket server;
 
@@ -21,13 +21,11 @@ class ServerThread implements Runnable
             DataInputStream dIn = new DataInputStream(server.getInputStream());
             DataOutputStream dOut = new DataOutputStream(server.getOutputStream());
             int position = Server.addClient(dOut);
-
             boolean done = false;
+
             while (!done)
             {
-                byte messageType = dIn.readByte();
-
-                switch (messageType)
+                switch (dIn.readByte())
                 {
                     case 1:
                         Server.sendAll(dIn.readUTF());
@@ -38,6 +36,7 @@ class ServerThread implements Runnable
                 }
             }
             dIn.close();
+            Server.removeClient(position);
         }
         catch (IOException e)
         {

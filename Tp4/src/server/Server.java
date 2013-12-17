@@ -2,12 +2,13 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.LinkedList;
 import java.util.Vector;
 
 
 public class Server
 {
-    private static Vector<DataOutputStream> tabClients = new Vector<DataOutputStream>();
+    private static LinkedList<DataOutputStream> tabClients = new LinkedList<DataOutputStream>();
     private static int port = 4444;
     private static int maxConnections = 10;
     private static int nbOfClient = 0;
@@ -39,25 +40,23 @@ public class Server
     static synchronized public int addClient(DataOutputStream dOut)
     {
         nbOfClient++;
-        tabClients.addElement(dOut);
+        tabClients.addLast(dOut);
         return tabClients.size() - 1;
     }
 
     static synchronized public void removeClient(int position)
     {
-        nbOfClient--;
-        if (tabClients.elementAt(position) != null)
+        if (tabClients.size() > position)
         {
-            tabClients.removeElementAt(position);
+            tabClients.remove(position);
+            nbOfClient--;
         }
     }
 
     static synchronized public void sendAll(String message)
     {
-        DataOutputStream dOut;
-        for (int i = 0; i < tabClients.size(); i++)
+        for (DataOutputStream dOut : tabClients)
         {
-            dOut = tabClients.elementAt(i);
             if (dOut != null)
             {
                 try

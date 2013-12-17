@@ -1,96 +1,89 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
-
-import client.Interface.ChatRoom;
-import javafx.application.Application;
 
 public class Client
 {
-	//TODO
-	String username = "default";
-	String ip = "localhost";
-	int port = 4444;
-	
-	public static void main (String[] args)
+    private DataOutputStream dOut;
+    private DataInputStream dIn;
+    private Socket socket;
+
+    private String ip;
+    private int port;
+    private String username;
+
+    public Client(String username, String ip, int port)
     {
-		Application.launch(ChatRoom.class, args);
-    }
-    
-	public void connectToServer()
-    {
-    	try
+        this.username = username;
+        this.ip = ip;
+        this.port = port;
+
+        try
         {
-            Socket socket = new Socket(ip, port);
-            DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
+            this.socket = new Socket(this.ip, this.port);
+            this.dOut = new DataOutputStream(this.socket.getOutputStream());
+            this.dIn = new DataInputStream(this.socket.getInputStream());
+            sendText(this.username);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-            String input = "";
-            Boolean done = false;
+    public void sendText(String textToSend)
+    {
+        try
+        {
+            dOut.writeByte(1);
+            dOut.writeUTF(textToSend);
+            dOut.flush(); // Send off the data
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-            do
+    public String receiveText()
+    {
+        try
+        {
+            if(dIn.available() > 0)
             {
-                System.out.println("Enter something here : ");
-                BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-                input = bufferRead.readLine();
-
-                if (input.equals(new String("Q")))
-                {
-                	done = true;
-                }
-                else
-                {
-                	dOut.writeByte(1);
-                    dOut.writeUTF(input);
-                    dOut.flush(); // Send off the data
-                }
-                
-            }while (!done);
-
-            // Send the exit message
-            dOut.writeByte(-1);
-            dOut.flush();
-
-            dOut.close();
-            socket.close();
-        }
-        catch (IOException ioe)
+                return dIn.readUTF();
+            }
+        } catch (IOException e)
         {
-            System.out.println("IOException on socket listen: " + ioe);
-            ioe.printStackTrace();
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public void logOut()
+    {
+        try
+        {
+            dOut.writeByte(0);
+            dOut.flush(); // Send off the data
+        } catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
-    
-    public String getUsername()
-    {
-		return this.username;
-    }
-    
-    public void setUsername(String _username)
-    {
-    	this.username = _username;
-    }
-    
+
     public String getIp()
     {
-    	return this.ip;
+        return ip;
     }
-    
-    public void setIp(String _ip)
+
+    public int getPort()
     {
-    	this.ip = _ip;
+        return port;
     }
-    
-    public Integer getPort()
+
+    public String getUsername()
     {
-    	return this.port;
-    }
-    
-    public void setPort(int _port)
-    {
-    	this.port = _port;
+        return username;
     }
 }

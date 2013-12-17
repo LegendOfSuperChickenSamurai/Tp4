@@ -1,7 +1,7 @@
 package client.Interface;
 
-import client.Client;
-import javafx.application.Application;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,123 +15,107 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import javafx.util.Duration;
 
-public class ChatRoom extends Application
+public class ChatRoom
 {
+    public ChatRoom()
+    {
+        final BorderPane borderpane = new BorderPane();
+        final TextArea output = new TextArea();
+        final TextField input = new TextField();
 
-	private final String CHATROOM = "chat room";
-	private final String IP = "Adresse Ip: ";
-	private final String PORT = "Port: ";
-	private final String USERNAME = "Nom d'utilisateur: ";
-	private final String TEXT = "Message: ";
-	private final String CONNECT = "Connecter";
-	private final String SEND = "Envoyer";
-	
-	BorderPane borderpane;
-	Login login;
-	TextArea output;
-	TextField input;
-	Client client;
-	
-	@Override
-	public void start(Stage stage) throws Exception
-	{
-		//TODO
-		newElements();
-		Scene scene = new Scene(this.borderpane);
-		scene.setFill(Color.web("0xC0C0C0"));
-		stage.setTitle(this.CHATROOM);
-		stage.setScene(scene);
-		initElements();
-		stage.show();
-	}
+        Button disconnect = new Button("Déconnecter");
+        GridPane rightGrid = new GridPane();
+        rightGrid.setVgap(6);
+        rightGrid.setHgap(6);
+        rightGrid.add(new Text("Nom d'utilisateur: " + MainApp.client.getUsername()), 0, 0);
+        rightGrid.add(new Text("Adresse Ip: " + MainApp.client.getIp()), 0, 1);
+        rightGrid.add(new Text("Port: " + MainApp.client.getPort()), 0, 2);
+        rightGrid.add(disconnect, 0, 3);
+        borderpane.setRight(rightGrid);
+        BorderPane.setMargin(rightGrid, new Insets(3));
 
-	private void initElements()
-	{
-		showLogin(); 
-		initInputAndOutput();
-		addTextToOutput();
-		
-		Button connect = new Button(this.CONNECT);
-		GridPane rightGrid = new GridPane();
-		rightGrid.setVgap(6);
-		rightGrid.setHgap(6);
-		rightGrid.add(new Text(this.USERNAME + client.getUsername()), 0, 0);
-		rightGrid.add(new Text(this.IP + client.getIp()), 0, 1);
-		rightGrid.add(new Text(this.PORT + client.getPort()), 0, 2);
-		rightGrid.add(connect, 0, 3);
-		this.borderpane.setRight(rightGrid);
-		BorderPane.setMargin(rightGrid, new Insets(3));
-		
-		connect.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {			
-					login.showDialog();
-			}
-		});
-		
-		GridPane leftGrid = new GridPane();
-		leftGrid.setVgap(10);
-		leftGrid.setHgap(6);
-		leftGrid.add(this.output, 0 ,0);
-		this.borderpane.setLeft(leftGrid);
-		BorderPane.setMargin(leftGrid, new Insets(3));
-		
-		Button addText = new Button(this.SEND);
-		GridPane bottomGrid = new GridPane();
-		bottomGrid.setVgap(10);
-		bottomGrid.setHgap(6);
-		bottomGrid.add(new Text(this.TEXT), 0 ,0);
-		bottomGrid.add(this.input, 1, 0);
-		bottomGrid.add(addText, 2, 0);
-		this.borderpane.setBottom(bottomGrid);
-		BorderPane.setMargin(bottomGrid, new Insets(3));
-		
-		addText.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {			
-				addTextToOutput();
-			}
-		});
-	}
-
-	private void showLogin()
-	{
-		this.login.showDialog();
-	}
-	
-	private void newElements()
-	{
-		this.borderpane = new BorderPane();
-		this.output = new TextArea();
-		this.input = new TextField();
-		this.client = new Client();
-		this.login = new Login();
-	}
-	
-	private void addTextToOutput()
-	{
-		//TODO
-		output.appendText(input.getText() + "\n");	
-        input.setText("");
-	}
-	
-	private void initInputAndOutput()
-	{
-		output.setEditable(false);
-        output.setStyle("-fx-border-style: none");
-        output.setFocusTraversable(false); 
-       
-        input.setOnKeyPressed(new EventHandler<KeyEvent>() {	  
+        disconnect.setOnAction(new EventHandler<ActionEvent>()
+        {
             @Override
-            public void handle(KeyEvent event) {
-            	if (event.getCode().equals(KeyCode.ENTER))
-            	{
-            		addTextToOutput();
-            	}	  
+            public void handle(ActionEvent e)
+            {
+                MainApp.client.logOut();
+                Login login = new Login();
+            }
+        });
+
+        GridPane leftGrid = new GridPane();
+        leftGrid.setVgap(10);
+        leftGrid.setHgap(6);
+        leftGrid.add(output, 0 ,0);
+        borderpane.setLeft(leftGrid);
+        BorderPane.setMargin(leftGrid, new Insets(3));
+
+        Button addText = new Button("Envoyer");
+        GridPane bottomGrid = new GridPane();
+        bottomGrid.setVgap(10);
+        bottomGrid.setHgap(6);
+        bottomGrid.add(new Text("Message: "), 0 ,0);
+        bottomGrid.add(input, 1, 0);
+        bottomGrid.add(addText, 2, 0);
+        borderpane.setBottom(bottomGrid);
+        BorderPane.setMargin(bottomGrid, new Insets(3));
+
+        output.setEditable(false);
+        output.setStyle("-fx-border-style: none");
+        output.setFocusTraversable(false);
+
+        input.setOnKeyPressed(new EventHandler<KeyEvent>()
+        {
+            @Override
+            public void handle(KeyEvent event)
+            {
+                if (event.getCode().equals(KeyCode.ENTER))
+                {
+                    MainApp.client.sendText(MainApp.client.getUsername() + ": " + input.getText());
+                    input.setText("");
+                }
             }
         });
         input.requestFocus();
-	}
+
+        addText.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent e)
+            {
+                MainApp.client.sendText(MainApp.client.getUsername() + ": " + input.getText());
+                input.setText("");
+            }
+        });
+
+
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                String temp = MainApp.client.receiveText();
+
+
+                if (!temp.equals(""))
+                {
+                    output.appendText(temp + "\n");
+                }
+            }
+        }));
+        timeline.playFromStart();
+
+
+        Scene scene = new Scene(borderpane);
+        scene.setFill(Color.web("0xC0C0C0"));
+
+        MainApp.stage.setTitle("Chat Room");
+        MainApp.stage.setScene(scene);
+        MainApp.stage.show();
+    }
 }
